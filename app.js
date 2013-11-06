@@ -32,4 +32,4 @@ app.get('/',function(req,res){
   res.redirect('/index.html');
 });
 
-app.listen(8080);
+app.listen(80);
