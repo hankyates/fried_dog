@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<title>FriedDog</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script src="js/angular-1.0.1.min.js"></script>
+		<script src="js/controllers.js"></script>
+	</head>
+	<body ng-app="friedDog">
+	
+		<div id="container" ng-controller="recipelist">
+			<div class="recipe" ng-repeat="recipe in recipes">
+				<div class="title">{{recipe.name}}</div>
+				<img class="preview" src="img/derpy-corgi-5.jpg"/>
+				<div class="ingredients">
+					<ul>
+						<li ng-repeat="ingredient in recipe.ingredients">
+						{{ingredient.quantity}} {{ingredient.unit}} {{ingredient.name}}
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
