@@ -1,35 +1,36 @@
-var //mongo = require('mongodb').MongoClient,
-    express = require('express'),
-    app = express(),
-    mDB;
-/*
-mongo.connect('mongodb://localhost:27017/frieddog', function(err, db){
-  if(err) {
-    console.log('mongo connect error!');
-    console.log(err);
-    return;
-  }
-  mDB = db;
-  console.log('mongo connected!');
-});
-*/
-// Configuration
-app.configure(function(){
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.static(__dirname + '/public'));
+var restify = require('restify'),
+    http = require('http'),
+    api_key = require('./api_key.json'),
+    api_url = 'http://api.yummly.com/v1/api/recipes?_app_id=' + api_key.application_id + '&_app_key=' + api_key.application_key + '&q=',
+    server = restify.createServer({ name: 'friedDog' });
+
+server.use(restify.acceptParser(server.acceptable));
+server.use(restify.queryParser());
+server.use(restify.bodyParser());
+
+server.get('/recipes/:term', function (req, res, next) {
+  var recipes = {};
+
+  http.get(api_url + req.params.term, function(response) {
+    var recipes_raw = '';
+
+    response.on('data', function (chunk){
+        recipes_raw += chunk;
+    });
+
+    response.on('end',function(){
+        recipes = JSON.parse(recipes_raw);
+        res.send(recipes);
+        return next();
+    });
+
+  }).on('error', function(e) {
+    res.send(e.message);
+  });
+
+
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+server.listen(8080, function () {
+  console.log('%s listening at %s', server.name, server.url);
 });
-
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
-
-app.get('/',function(req,res){
-  res.redirect('/index.html');
-});
-
-app.listen(80);
