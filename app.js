@@ -1,6 +1,7 @@
 var //mongo = require('mongodb').MongoClient,
-    express = require('express'),
-    app = express(),
+	config = require('./apiServerConfig.json'),
+	restify = require('restify'),
+	server = restify.createServer(config),
     mDB;
 /*
 mongo.connect('mongodb://localhost:27017/frieddog', function(err, db){
@@ -13,23 +14,9 @@ mongo.connect('mongodb://localhost:27017/frieddog', function(err, db){
   console.log('mongo connected!');
 });
 */
+
+server.get('/recipes',function(req,res,next){
+});
 // Configuration
-app.configure(function(){
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.static(__dirname + '/public'));
-});
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
-
-app.get('/',function(req,res){
-  res.redirect('/index.html');
-});
-
-app.listen(80);
