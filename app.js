@@ -18,11 +18,11 @@ server.get('/recipes/:term', function (req, res, next) {
       console.log('Error ' + err);
   });
 
-  redis_client.hmget(req.params.term, function (err, replies) {
+  redis_client.get(req.params.term, function (err, replies) {
     if (!replies) {
       recipes = replies;
     } else {
-      res.send(replies);
+      res.send(JSON.parse(replies));
       return next();
     }
   });
@@ -37,7 +37,7 @@ server.get('/recipes/:term', function (req, res, next) {
 
       response.on('end',function(){
           recipes = JSON.parse(recipes_raw);
-          redis_client.hmset(req.params.term, recipes);
+          redis_client.set(req.params.term, JSON.stringify(recipes));
           res.send(recipes);
           return next();
       });
