@@ -3,32 +3,31 @@ var restify = require('restify'),
     api_key = require('./api_key.json'),
     api_url = 'http://api.yummly.com/v1/api/recipes?_app_id=' + api_key.application_id + '&_app_key=' + api_key.application_key + '&q=',
     redis = require('redis'),
-    redis_client = redis.createClient(),
-	mongo = require('mongodb').MongoClient,
+    redis_client,// = redis.createClient(),
 	config = require('./apiServConfig.json'),
     server = restify.createServer(config),
 	log = new require('./logger').Logger('api'),
-	mDB = new require('./mdb').MongoDB();
+	userRepo = new require('./userRepo')();
 
 
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
-server.put('/user/:name',function(req,res,next) {
-	var newUser = {name: req.params.name,recipes:[{name:'Fried Dog'}]};
-	log.info('adding user: ' + newUser.name);
-	mDB.insert(newUser,function(err,usr){
-		var msg = err || 'added user: ' + newUser.name;
+server.put('/user/username/:name/email/:email',function(req,res,next) {
+	log.info('adding user: ' + req.params.name);
+	userRepo.addUser(req.params.name,req.params.email,function(err,usr){
+		var msg = err || 'added user: ' + JSON.stringify(usr);
 		res.send(msg);
+		log.info(msg);
 		next();
 	});
 });
 
-server.get('/user/:name',function(req,res,next) {
-	var user = {name: req.params.name};
-	log.info('getting user: ' + user.name);
-	mDB.findOne(user,function(err,usr){
+server.get('/user/username/:name',function(req,res,next) {
+	log.info('getting user: ' + req.params.name);
+	userRepo.getUser(req.params.name,null,function(err,usr){
+		log.info('found user');
 		var msg = err || 'found user: ' + JSON.stringify(usr);
 		res.send(msg);
 		log.info(msg);

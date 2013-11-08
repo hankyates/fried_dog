@@ -6,17 +6,21 @@ var mongo = require('mongodb').MongoClient,
  * mongo callbacks are function(error,obj){}
  *
  * ******************************************/
-function mongoDb() {
+function mongoDb(collectionName) {
 	var mDB;
-	var collection = 'default';
+	var collection = collectionName || 'default';
 	mongo.connect('mongodb://localhost:27017/fd',function(err,db){
 		if(err) {
 			log.error('error connecting to mongo: ' + err);
 			return;
 		}
-		log.info('connected to mongo!');
+		log.info('connected to mongo at collection: ' + collection);
 		mDB = db;
 	});
+
+	this.getCollection = function() {
+		return collection;
+	}
 
 	this.setCollection = function(name){
 		collection = name;
@@ -52,12 +56,14 @@ function mongoDb() {
 			}
 			return;
 		}
+		log.info('searching ' + collection + ' for ' + JSON.stringify(searchObj));
 		mDB.collection(collection).findOne(searchObj, function(err,obj) {
 			if(err) {
 				log.error('error finding object in collection fd.' + collection);
 				log.error('searchObj: ' + JSON.stringify(searchObj));
 			}
 
+			log.info('got result: ' + JSON.stringify(obj) + ' calling callback');
 			if( callback && typeof callback === 'function' ) {
 				callback(err,obj);
 			}
