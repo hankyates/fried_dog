@@ -36,6 +36,8 @@ server.get('/user/username/:name',function(req,res,next) {
 
 server.get('/recipes/:term', function (req, res, next) {
   var recipes = {};
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
   redis_client.get(req.params.term, function (err, replies) {
     console.log('replies '+!!replies);
