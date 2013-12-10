@@ -32,7 +32,7 @@
     <div class="container">
       <div class="jumbotron">
         <h1>Fried Dog</h1>
-        <div class="input-group">
+        <div class="input-group search">
           <input type="text" class="form-control search-term">
           <span class="input-group-btn">
             <button class="btn btn-default search-go" type="button">Go!</button>
@@ -43,11 +43,22 @@
       </div>
     </div>
 
+    <div id="recipe-list" class="container">
+    </div>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
     <script src="js/lib/underscore.js"></script>
     <script src="js/lib/backbone.js"></script>
     <script data-main="js/main.js" src="js/lib/require.min.js"></script>
+    <script type="text/template" id="recipe_template">
+      <div class="container recipe">
+        <%= name %>
+        <% if (imageUrl) { %>
+          <img src="<%= imageUrl %>" />
+        <% } %>
+      </div>
+    </script>
 
       <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
       <script>

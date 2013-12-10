@@ -1,13 +1,19 @@
-define([], function() {
+define(['models/search',], function(Search) {
   var SearchView = Backbone.View.extend({
-    tagName: 'div',
-    className: 'search',
+    model: Search,
     events: {
-        'click': 'open'
+        'click .search-go': 'open',
+        'keyup .search-term': 'processKey'
     },
 
     open: function() {
-      console.log(this);
+      var searchTerm = this.$el.find('.search-term').val();
+      new Search({term: searchTerm});
+    },
+
+    processKey: function(e) {
+      if(e.which === 13) // enter key
+        this.open();
     }
 
   });

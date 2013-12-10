@@ -3,7 +3,9 @@ define(['router', 'views/search'], function(Router, SearchView) {
     run: function() {
       new Router();
       Backbone.history.start();
-      new SearchView();
+      new SearchView({
+        el: '.search'
+      });
     }
   }
 });
