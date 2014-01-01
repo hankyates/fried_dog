@@ -2,14 +2,15 @@
   "name": "frieddog",
   "version": "0.0.1",
   "description": "manage recipes and kitchen inventory",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/hankyates/fried_dog.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hankyates/fried_dog.git"
   },
   "dependencies": {
     "restify": "~2.6.0",
     "redis": "~0.9.0",
     "node-static": "~0.7.2",
-    "pg": "~2.8.2"
+    "pg": "~2.8.2",
+    "db-migrate": "~0.6.3"
   }
 }
