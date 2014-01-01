@@ -1,8 +1,12 @@
-var fs = require('fs');
-var path = require('path');
-var config = require('./database.json')
+var fs = require('fs'),
+    path = require('path'),
+    config = require('./database.json'),
+    log = new require('./logger').Logger('dbUtil'),
+    pg = require('pg');
+
 var parsedConfig;
 var environment = process.argv.splice(2).indexOf('--prod') === -1 ? 'dev' : 'prod';
+log.info('using environment ' + environment);
 
 function buildPgConnectionString(env) {
     var conStr = 'pg://';
@@ -32,8 +36,29 @@ function getPgConnectionString() {
     return buildPgConnectionString(environment);
 }
 
+function doPgCb(cb,err,dbc,done) {
+    if(cb && typeof cb === 'function') {
+        cb(err,dbc,done);
+    }
+    else {
+        log.error('null callback!');
+    }
+}
+
+function pgDo(cb) {
+    log.info('connecting to DB');
+
+    var conStr = getPgConnectionString();
+    pg.connect(conStr,function(err,dbc,done) {
+        if (err) {
+            log.info('err: ' + err);
+        }
+        doPgCb(cb,err,dbc,done);
+    });
+}
+
 exports = module.exports = {
-    getConnectionString: getPgConnectionString,
+    pgDo: pgDo,
     tables: {
         user: 'users'
     }
