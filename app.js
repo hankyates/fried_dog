@@ -15,21 +15,23 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
 server.put('/user/username/:name/email/:email',function(req,res,next) {
-	log.info('adding user: ' + req.params.name);
-	userRepo.addUser(req.params.name,req.params.email,'newuser',function(err,usr){
+    var username = req.params.name;
+	log.info('adding user: ' + username);
+	userRepo.addUser(username,req.params.email,function(err,usr){
         var msg = {
             error: err || '',
             data: usr || {}
         };
-        res.send(JSON.stringify(msg));
+        res.send(msg);
 		log.info(JSON.stringify(msg));
         next();
 	});
 });
 
 server.get('/user/username/:name',function(req,res,next) {
-	log.info('getting user: ' + req.params.name);
-	userRepo.getUser(req.params.name,function(err,usr){
+    var username = req.params.name;
+	log.info('getting user: ' + username);
+	userRepo.getUser(username,function(err,usr){
         if(usr) {
             log.info('found user');
         }
@@ -40,7 +42,7 @@ server.get('/user/username/:name',function(req,res,next) {
             error: err || '',
             data: usr || {}
         };
-        res.send(JSON.stringify(msg));
+        res.send(msg);
 		log.info(JSON.stringify(msg));
 		next();
 	});
