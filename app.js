@@ -16,21 +16,32 @@ server.use(restify.bodyParser());
 
 server.put('/user/username/:name/email/:email',function(req,res,next) {
 	log.info('adding user: ' + req.params.name);
-	userRepo.addUser(req.params.name,req.params.email,function(err,usr){
-		var msg = err || 'added user: ' + JSON.stringify(usr);
-		res.send(msg);
-		log.info(msg);
-		next();
+	userRepo.addUser(req.params.name,req.params.email,'newuser',function(err,usr){
+        var msg = {
+            error: err || '',
+            data: usr || {}
+        };
+        res.send(JSON.stringify(msg));
+		log.info(JSON.stringify(msg));
+        next();
 	});
 });
 
 server.get('/user/username/:name',function(req,res,next) {
 	log.info('getting user: ' + req.params.name);
-	userRepo.getUser(req.params.name,null,function(err,usr){
-		log.info('found user');
-		var msg = err || 'found user: ' + JSON.stringify(usr);
-		res.send(msg);
-		log.info(msg);
+	userRepo.getUser(req.params.name,function(err,usr){
+        if(usr) {
+            log.info('found user');
+        }
+        else {
+            log.info('no user found');
+        }
+        var msg = {
+            error: err || '',
+            data: usr || {}
+        };
+        res.send(JSON.stringify(msg));
+		log.info(JSON.stringify(msg));
 		next();
 	});
 });
