@@ -1,13 +1,13 @@
 
 var Logger = require('./logger').Logger,
     pg = require('pg'),
-    conStr = 'pg://fduser@localhost:5432/fd',
-    userTable = 'fd.users';
+    dbUtil = require('./dbUtil'),
+    conStr = dbUtil.getConnectionString(),
+    userTable = dbUtil.tables.user;
 
-function User(username,email,name,karma) {
+function User(username,email,karma) {
     this.username = username;
     this.email = email;
-    this.name = name;
     this.karma = karma || 0;
 
     return this;
@@ -33,17 +33,25 @@ function userRepo() {
         return str.replace(/[^A-Za-z0-9\s]/g, '').replace(/\s+/g,' ');
     }
 
-	this.addUser = function(username,email,name,callback) {
-		var newUser = new User(clean(username), email, clean(name));
-        log.info('adding user: ' + JSON.stringify(newUser));
+	this.addUser = function(username,email,callback) {
+        var cleanUsername = clean(username);
+        var cleanEmail = clean(email);
+        log.info('adding user');
+        log.info('username: ' + cleanUsername);
+        log.info('email: ' + cleanEmail);
         pgDo(function(err,dbc,done) {
-            var q ='insert into ' + userTable + ' (username, email, name) values (';
-            q += "'" + username + "','" + email + "','" + name + "');";
+            var q ='insert into ' + userTable + ' (username, email) values (';
+            q += "'" + cleanUsername + "','" + cleanEmail + "');";
             log.info('running query: ' + q);
             dbc.query(q,function(err,result){
                 log.info('err: ' + err);
                 log.info('result: ' + JSON.stringify(result));
-                doCb(callback,err,newUser);
+                if(err) {
+                    doCb(callback,err,undefined);
+                }
+                else {
+                    getUser(cleanUsername, callback);
+                }
             });
             done();
         });
@@ -59,7 +67,7 @@ function userRepo() {
                 done();
                 return;
             }
-            var q = 'select username, email, name, karma from ' + userTable + " where username = '" + username + "' ;";
+            var q = 'select username, email, karma from ' + userTable + " where username = '" + username + "' ;";
             log.info('running query: ' + q);
             dbc.query(q, function(err,result) {
                 log.info('got result!');
@@ -70,7 +78,7 @@ function userRepo() {
                     if(result.rows[0]) {
                         var row = result.rows[0];
                         log.info('result first row: ' + JSON.stringify(row));
-                        user = new User(row.username, row.email, row.name, row.karma);
+                        user = new User(row.username, row.email, row.karma);
                     }
                     else {
                         log.info('no results!');

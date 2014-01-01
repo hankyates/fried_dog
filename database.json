@@ -1,0 +1,15 @@
+{
+    "dev": {
+        "driver": "pg",
+        "user": "fduser",
+        "host": "localhost",
+        "database": "fd_test"
+    },
+    "prod": {
+        "driver": "pg",
+        "user": { "ENV" : "PG_USER" },
+        "password": { "ENV" : "PG_PASSWORD" },
+        "host": { "ENV" : "PG_SERVER" },
+        "database": "fd"
+    }
+}
