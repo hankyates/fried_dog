@@ -1,25 +1,73 @@
-<html>
-	<head>
-		<title>FriedDog</title>
-		<link rel="stylesheet" type="text/css" href="css/style.css" />
-		<script src="js/angular-1.0.1.min.js"></script>
-		<script src="js/controllers.js"></script>
-	</head>
-	<body ng-app="friedDog">
-	
-		<div id="container" ng-controller="recipelist">
-			<div class="recipe" ng-repeat="recipe in recipes">
-				<div class="title">{{recipe.name}}</div>
-				<img class="preview" src="img/derpy-corgi-5.jpg"/>
-				<div class="ingredients">
-					<ul>
-						<li ng-repeat="ingredient in recipe.ingredients">
-						{{ingredient.quantity}} {{ingredient.unit}} {{ingredient.name}}
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</body>
-</html>
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Fried Dog Yo!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Fried Dog</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar/">Default</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Fried Dog</h1>
+        <div class="input-group search">
+          <input type="text" class="form-control search-term">
+          <span class="input-group-btn">
+            <button class="btn btn-default search-go" type="button">Go!</button>
+          </span>
+        </div>
+        <p>
+        </p>
+      </div>
+    </div>
+
+    <div id="recipe-list" class="container">
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+    <script src="js/lib/underscore.js"></script>
+    <script src="js/lib/backbone.js"></script>
+    <script data-main="js/main.js" src="js/lib/require.min.js"></script>
+    <script type="text/template" id="recipe_template">
+      <div class="container recipe">
+        <%= name %>
+        <% if (imageUrl) { %>
+          <img src="<%= imageUrl %>" />
+        <% } %>
+      </div>
+    </script>
+
+      <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+      <script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='//www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','UA-XXXXX-X');ga('send','pageview');
+      </script>
+    </body>
+  </html>
