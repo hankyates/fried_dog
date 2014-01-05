@@ -2,7 +2,7 @@ var restify = require('restify'),
     http = require('http'),
     api_key = require('./api_key.json') || {application_id: '', application_key: ''},
     api_url = 'http://api.yummly.com/v1/api/recipes?_app_id=' + api_key.application_id + '&_app_key=' + api_key.application_key + '&q=',
-    redis_client = new require('./redis')(),
+    redis_client,// = new require('./redis')(),
     config = require('./apiServConfig.json'),
     server = restify.createServer(config),
     log = new require('./logger').Logger('api'),
@@ -14,24 +14,37 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
 server.put('/user/username/:name/email/:email',function(req,res,next) {
-  log.info('adding user: ' + req.params.name);
-  userRepo.addUser(req.params.name,req.params.email,function(err,usr){
-    var msg = err || 'added user: ' + JSON.stringify(usr);
-    res.send(msg);
-    log.info(msg);
-    next();
-  });
+    var username = req.params.name;
+	log.info('adding user: ' + username);
+	userRepo.addUser(username,req.params.email,function(err,usr){
+        var msg = {
+            error: err || '',
+            data: usr || {}
+        };
+        res.send(msg);
+		log.info(JSON.stringify(msg));
+        next();
+	});
 });
 
 server.get('/user/username/:name',function(req,res,next) {
-  log.info('getting user: ' + req.params.name);
-  userRepo.getUser(req.params.name,null,function(err,usr){
-    log.info('found user');
-    var msg = err || 'found user: ' + JSON.stringify(usr);
-    res.send(msg);
-    log.info(msg);
-    next();
-  });
+    var username = req.params.name;
+	log.info('getting user: ' + username);
+	userRepo.getUser(username,function(err,usr){
+        if(usr) {
+            log.info('found user');
+        }
+        else {
+            log.info('no user found');
+        }
+        var msg = {
+            error: err || '',
+            data: usr || {}
+        };
+        res.send(msg);
+		log.info(JSON.stringify(msg));
+		next();
+	});
 });
 
 server.get('/recipes/:term', function (req, res, next) {
