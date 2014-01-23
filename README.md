@@ -1,4 +1,4 @@
-Kitcch
+Kitch
 =========
 
 Prerequisites
